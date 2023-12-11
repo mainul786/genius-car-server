@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 //Middlewire
@@ -10,8 +10,8 @@ require('dotenv').config();
 app.use(cors())
 app.use(express.json())
 
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASSWORD);
+// console.log(process.env.DB_USER);
+// console.log(process.env.DB_PASSWORD);
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.0vnziom.mongodb.net/?retryWrites=true&w=majority`;
@@ -32,6 +32,14 @@ async function run() {
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
+        })
+
+        app.get('/services/:id', async(req, res)=>{
+            const id = req.params.id;
+            console.log(id)
+            const query = {_id: new ObjectId(id)};
+            const service = await serviceCollection.findOne(query);
+            res.send(service)
         })
     } finally {
 
