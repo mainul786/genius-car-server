@@ -64,7 +64,12 @@ async function run() {
 
         // Order
         app.get('/orders', verifyJWT, async(req, res)=>{
-            console.log(req.headers);
+            // console.log(req.headers);
+            const decoded = req.decoded;
+            console.log(decoded);
+            if(decoded.email !== req.query.email){
+                res.status(403).send({massage: 'unauthorized access'})
+            }
             let query = {};
             console.log(req.query.email)
             if(req.query.email){
